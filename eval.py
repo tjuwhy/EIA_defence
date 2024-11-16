@@ -313,7 +313,6 @@ def evaluate(eval_dir, eval_dir_benign, injected_element_only):
     print("-" * 20, "END","-" * 20)
     
 
-
 def main():
     parser = argparse.ArgumentParser('Red Team Web Agent')
 

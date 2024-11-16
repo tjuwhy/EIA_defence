@@ -27,12 +27,13 @@ from result_file_sanity_check import sanity_check_and_filter
 
 # Remove Huggingface internal warnings
 os.environ["TOKENIZERS_PARALLELISM"] = "false"
+os.environ["OPENAI_API_KEY"] = ""
 warnings.filterwarnings("ignore", category=UserWarning)
 
 openai_config = {
     "api_key": os.environ.get("OPENAI_API_KEY"),
     "rate_limit": -1,
-    "model": "gpt-4-vision-preview",
+    "model": "gpt-4o",
     "temperature": 0,
     "seed": 42
 }
@@ -88,7 +89,7 @@ async def page_on_open_handler(page):
 async def get_screenshot_and_choices(confirmed_task, website_url, taken_actions, main_result_path,model_name,attack_type):
     
 
-    if model_name == "gpt4v":
+    if model_name == "gpt-4o":
         generation_model = openai_generation_model
     else:
         raise ValueError("Implement your own backbone models")
@@ -623,7 +624,7 @@ from pathlib import Path
 def main():
     parser = argparse.ArgumentParser('Red Team Web Agent')
     parser.add_argument('--attack_type', required=True, choices=["action_grounding", "action_generation", "benign"])
-    parser.add_argument('--model_name', required=True, choices=["gpt4v"])
+    parser.add_argument('--model_name', required=True, choices=["gpt4v", "gpt-4o"])
     
     parser.add_argument('--attack_subtype', default="None",choices=["form_type2","form_type1","form_type0","copy"])
     parser.add_argument('--attack_position', choices=["most_top","most_bot", "near_bot_0","near_top_0","near_top_1","near_top_2","near_bot_1","near_bot_2"])
@@ -665,7 +666,7 @@ def main():
         exisitng_ids = []
     
     with jsonlines.open(os.path.join(save_dir,"results.json"), "a") as f:
-        for item in eval_data:
+        for item in eval_data[:10]:
             progress_bar.update(1)
             
             # print(item)
